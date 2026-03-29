@@ -3,31 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meu Sistema de Estudos</title>
+<title>Estudei</title>
 <style>
     /* Reset básico */
     * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
 
     /* Fundo da página */
     body { 
-        background: #bfbfbf; /* cinza médio */
-        color: #333; 
+        background: #000000; /* preto */
+        color: #cccccc; /* cinza claro */
     }
 
     /* Cabeçalho */
     header {
-        background: #4d4d4d; 
-        color: #f4f4f4;
+        background: #111111; /* cinza bem escuro */
+        color: #cccccc;
         padding: 15px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    header h1 { font-size: 1.5rem; }
+    header h1 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #cccccc; /* título cinza */
+    }
 
     nav a {
-        color: #f4f4f4;
+        color: #cccccc; /* links cinza */
         text-decoration: none;
         margin-left: 20px;
         font-weight: bold;
@@ -43,7 +47,7 @@
         padding: 0 20px;
     }
 
-    /* Cards */
+    /* Cards cinza escuro com sombra */
     .cards {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -51,48 +55,34 @@
     }
 
     .card {
-        background: #f4f4f4; /* branco acinzentado */
+        background: #222222; /* cinza escuro */
         border-radius: 10px;
         padding: 20px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 10px rgba(255,255,255,0.1);
         transition: transform 0.3s, box-shadow 0.3s;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         text-align: center;
     }
 
     .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0,0,0,0.25);
+        box-shadow: 0 8px 15px rgba(255,255,255,0.2);
     }
 
-    /* Ícones nas matérias */
-    .card img {
-        width: 60px;
-        margin-bottom: 15px;
+    .card h2 { 
+        margin-bottom: 10px; 
+        font-size: 1.2rem; 
+        color: #e0e0e0; /* título do card cinza claro */
     }
 
-    .card h2 { margin-bottom: 10px; font-size: 1.2rem; color: #333; }
-    .card p { font-size: 0.95rem; margin-bottom: 15px; }
-    .card a {
-        display: inline-block;
-        text-decoration: none;
-        color: #f4f4f4;
-        background: #4d4d4d; /* botão cinza escuro */
-        padding: 8px 15px;
-        border-radius: 5px;
-        transition: 0.3s;
-    }
-    .card a:hover { background: #333; }
+    .card p { font-size: 0.95rem; color: #aaaaaa; /* descrição cinza mais claro */ }
 
     /* Footer */
     footer {
         text-align: center;
         padding: 15px 0;
         margin-top: 40px;
-        background: #4d4d4d;
-        color: #f4f4f4;
+        background: #111111;
+        color: #cccccc;
     }
 
     @media (max-width: 600px) {
@@ -104,7 +94,7 @@
 <body>
 
 <header>
-    <h1>Meu Sistema de Estudos</h1>
+    <h1>Estudei</h1>
     <nav>
         <a href="#">Início</a>
         <a href="#">Matérias</a>
@@ -116,22 +106,27 @@
 <div class="container">
     <div class="cards">
         <div class="card">
-            <img src="matematica-icon.png" alt="Matemática">
             <h2>Matemática</h2>
-            <p>Apostilas, exercícios e resumos para estudar álgebra e geometria.</p>
-            <a href="#">Ver PDFs</a>
+            <p>Exercícios e resumos para álgebra e geometria.</p>
         </div>
         <div class="card">
-            <img src="portugues-icon.png" alt="Português">
             <h2>Português</h2>
-            <p>Gramática, interpretação de texto e literatura para praticar.</p>
-            <a href="#">Ver PDFs</a>
+            <p>Gramática, interpretação de texto e literatura.</p>
         </div>
         <div class="card">
-            <img src="historia-icon.png" alt="História">
             <h2>História</h2>
-            <p>Estude os principais eventos históricos do Brasil e do mundo.</p>
-            <a href="#">Ver PDFs</a>
+            <p>Principais eventos históricos do Brasil e do mundo.</p>
         </div>
         <div class="card">
-            <img src="quimica-icon.png" alt="Química">
+            <h2>Química</h2>
+            <p>Resumos e fórmulas para aprender química de forma simples.</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 Estudei
+</footer>
+
+</body>
+</html>
