@@ -1,132 +1,182 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Estudei</title>
+<title>Meu Sistema de Estudos</title>
+
 <style>
-    /* Reset básico */
-    * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #1e1e1e;
+    color: #fff;
+}
 
-    /* Fundo da página */
-    body { 
-        background: #000000; /* preto */
-        color: #cccccc; /* cinza claro */
-    }
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #2a2a2a;
+    position: fixed;
+    padding: 15px;
+}
 
-    /* Cabeçalho */
-    header {
-        background: #111111; /* cinza bem escuro */
-        color: #cccccc;
-        padding: 15px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.sidebar h2 {
+    color: #ccc;
+}
 
-    header h1 {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #cccccc; /* título cinza */
-    }
+.menu-item {
+    margin: 10px 0;
+    cursor: pointer;
+}
 
-    nav a {
-        color: #cccccc; /* links cinza */
-        text-decoration: none;
-        margin-left: 20px;
-        font-weight: bold;
-        transition: 0.3s;
-    }
+.submenu {
+    margin-left: 15px;
+    display: none;
+}
 
-    nav a:hover { opacity: 0.7; }
+.content {
+    margin-left: 260px;
+    padding: 20px;
+}
 
-    /* Container principal */
-    .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 0 20px;
-    }
+.card {
+    background: #2f2f2f;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
 
-    /* Cards cinza escuro com sombra */
-    .cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-    }
-
-    .card {
-        background: #222222; /* cinza escuro */
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(255,255,255,0.1);
-        transition: transform 0.3s, box-shadow 0.3s;
-        text-align: center;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(255,255,255,0.2);
-    }
-
-    .card h2 { 
-        margin-bottom: 10px; 
-        font-size: 1.2rem; 
-        color: #e0e0e0; /* título do card cinza claro */
-    }
-
-    .card p { font-size: 0.95rem; color: #aaaaaa; /* descrição cinza mais claro */ }
-
-    /* Footer */
-    footer {
-        text-align: center;
-        padding: 15px 0;
-        margin-top: 40px;
-        background: #111111;
-        color: #cccccc;
-    }
-
-    @media (max-width: 600px) {
-        header h1 { font-size: 1.2rem; }
-        nav a { margin-left: 10px; font-size: 0.9rem; }
-    }
+button {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 </style>
+
 </head>
+
 <body>
 
-<header>
-    <h1>Estudei</h1>
-    <nav>
-        <a href="#">Início</a>
-        <a href="#">Matérias</a>
-        <a href="#">Apostilas</a>
-        <a href="#">Contato</a>
-    </nav>
-</header>
+<div class="sidebar">
+    <h2>Estudos</h2>
 
-<div class="container">
-    <div class="cards">
-        <div class="card">
-            <h2>Matemática</h2>
-            <p>Exercícios e resumos para álgebra e geometria.</p>
-        </div>
-        <div class="card">
-            <h2>Português</h2>
-            <p>Gramática, interpretação de texto e literatura.</p>
-        </div>
-        <div class="card">
-            <h2>História</h2>
-            <p>Principais eventos históricos do Brasil e do mundo.</p>
-        </div>
-        <div class="card">
-            <h2>Química</h2>
-            <p>Resumos e fórmulas para aprender química de forma simples.</p>
-        </div>
+    <div class="menu-item" onclick="toggleMenu()">Concursos ▸</div>
+    <div class="submenu" id="submenu">
+        <div class="menu-item" onclick="selecionarConcurso('Petrobras')">Petrobras</div>
+        <div class="menu-item" onclick="selecionarConcurso('Fazenda')">Ministério da Fazenda</div>
+        <div class="menu-item" onclick="selecionarConcurso('Receita')">Receita Federal</div>
     </div>
+
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item">Agenda</div>
+    <div class="menu-item">Disciplinas</div>
+    <div class="menu-item">Revisões</div>
+    <div class="menu-item">Questões</div>
+    <div class="menu-item">Simulados</div>
+    <div class="menu-item">Estatísticas</div>
 </div>
 
-<footer>
-    &copy; 2026 Estudei
-</footer>
+<div class="content">
+
+    <h1 id="titulo">Dashboard</h1>
+
+    <div class="card">
+        <h3>📅 O que estudar hoje</h3>
+        <p id="tarefas">Nenhuma tarefa ainda</p>
+    </div>
+
+    <div class="card">
+        <h3>⏱ Registrar estudo</h3>
+        <input id="disciplina" placeholder="Disciplina">
+        <input id="tempo" placeholder="Horas">
+        <button onclick="salvarEstudo()">Salvar</button>
+    </div>
+
+    <div class="card">
+        <h3>📊 Progresso</h3>
+        <p id="progresso">0 horas estudadas</p>
+    </div>
+
+    <div class="card">
+        <h3>💾 Backup</h3>
+        <button onclick="exportar()">Fazer Backup</button>
+        <input type="file" onchange="importar(event)">
+    </div>
+
+</div>
+
+<script>
+
+let dados = JSON.parse(localStorage.getItem("dados")) || {
+    totalHoras: 0,
+    tarefas: []
+};
+
+function salvar() {
+    localStorage.setItem("dados", JSON.stringify(dados));
+}
+
+function salvarEstudo() {
+    let disciplina = document.getElementById("disciplina").value;
+    let tempo = Number(document.getElementById("tempo").value);
+
+    if (!disciplina || !tempo) return alert("Preencha tudo");
+
+    dados.totalHoras += tempo;
+
+    dados.tarefas.push({
+        disciplina,
+        tempo
+    });
+
+    salvar();
+    atualizar();
+}
+
+function atualizar() {
+    document.getElementById("progresso").innerText =
+        dados.totalHoras + " horas estudadas";
+
+    document.getElementById("tarefas").innerText =
+        dados.tarefas.map(t => t.disciplina + " - " + t.tempo + "h").join(", ");
+}
+
+function toggleMenu() {
+    let menu = document.getElementById("submenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+function selecionarConcurso(nome) {
+    document.getElementById("titulo").innerText = nome;
+}
+
+function exportar() {
+    let blob = new Blob([JSON.stringify(dados)], {type: "application/json"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "backup_estudos.json";
+    a.click();
+}
+
+function importar(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+
+    reader.onload = function() {
+        dados = JSON.parse(reader.result);
+        salvar();
+        atualizar();
+    };
+
+    reader.readAsText(file);
+}
+
+atualizar();
+
+</script>
 
 </body>
 </html>
