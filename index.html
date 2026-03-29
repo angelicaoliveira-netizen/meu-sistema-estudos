@@ -65,9 +65,9 @@ button {
 
     <div class="menu-item" onclick="toggleMenu()">Concursos ▸</div>
     <div class="submenu" id="submenu">
-        <div class="menu-item" onclick="selecionarConcurso('Petrobras')">Petrobras</div>
-        <div class="menu-item" onclick="selecionarConcurso('Fazenda')">Ministério da Fazenda</div>
-        <div class="menu-item" onclick="selecionarConcurso('Receita')">Receita Federal</div>
+        <div class="menu-item" onclick="trocarConcurso('petrobras')">Petrobras</div>
+        <div class="menu-item" onclick="trocarConcurso('fazenda')">Ministério da Fazenda</div>
+        <div class="menu-item" onclick="trocarConcurso('receita')">Receita Federal</div>
     </div>
 
     <div class="menu-item">Dashboard</div>
@@ -110,49 +110,69 @@ button {
 
 <script>
 
+// 🔹 Estrutura com 3 concursos separados
 let dados = JSON.parse(localStorage.getItem("dados")) || {
-    totalHoras: 0,
-    tarefas: []
+    concursoAtual: "petrobras",
+    concursos: {
+        petrobras: { totalHoras: 0, tarefas: [] },
+        fazenda: { totalHoras: 0, tarefas: [] },
+        receita: { totalHoras: 0, tarefas: [] }
+    }
 };
 
 function salvar() {
     localStorage.setItem("dados", JSON.stringify(dados));
 }
 
+// 🔹 Trocar concurso
+function trocarConcurso(nome) {
+    dados.concursoAtual = nome;
+    salvar();
+    atualizar();
+
+    let nomes = {
+        petrobras: "Petrobras",
+        fazenda: "Ministério da Fazenda",
+        receita: "Receita Federal"
+    };
+
+    document.getElementById("titulo").innerText = nomes[nome];
+}
+
+// 🔹 Salvar estudo no concurso ativo
 function salvarEstudo() {
     let disciplina = document.getElementById("disciplina").value;
     let tempo = Number(document.getElementById("tempo").value);
 
     if (!disciplina || !tempo) return alert("Preencha tudo");
 
-    dados.totalHoras += tempo;
+    let atual = dados.concursos[dados.concursoAtual];
 
-    dados.tarefas.push({
-        disciplina,
-        tempo
-    });
+    atual.totalHoras += tempo;
+    atual.tarefas.push({ disciplina, tempo });
 
     salvar();
     atualizar();
 }
 
+// 🔹 Atualizar tela
 function atualizar() {
+    let atual = dados.concursos[dados.concursoAtual];
+
     document.getElementById("progresso").innerText =
-        dados.totalHoras + " horas estudadas";
+        atual.totalHoras + " horas estudadas";
 
     document.getElementById("tarefas").innerText =
-        dados.tarefas.map(t => t.disciplina + " - " + t.tempo + "h").join(", ");
+        atual.tarefas.map(t => t.disciplina + " - " + t.tempo + "h").join(", ");
 }
 
+// 🔹 Menu
 function toggleMenu() {
     let menu = document.getElementById("submenu");
     menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 
-function selecionarConcurso(nome) {
-    document.getElementById("titulo").innerText = nome;
-}
-
+// 🔹 Backup
 function exportar() {
     let blob = new Blob([JSON.stringify(dados)], {type: "application/json"});
     let a = document.createElement("a");
@@ -174,6 +194,7 @@ function importar(event) {
     reader.readAsText(file);
 }
 
+// Inicializar
 atualizar();
 
 </script>
