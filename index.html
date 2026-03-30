@@ -2,14 +2,14 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Meu Sistema de Estudos</title>
+<title>Estudos</title>
 
 <style>
 body {
     margin: 0;
     font-family: Arial;
     background: #1e1e1e;
-    color: #fff;
+    color: white;
 }
 
 .sidebar {
@@ -41,6 +41,16 @@ body {
     margin-bottom: 15px;
     border-radius: 10px;
 }
+
+input {
+    margin: 5px;
+    padding: 5px;
+}
+
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
 </style>
 
 </head>
@@ -52,9 +62,9 @@ body {
 
     <div class="menu-item" onclick="toggleMenu()">Concursos ▸</div>
     <div class="submenu" id="submenu">
-        <div class="menu-item" onclick="trocarConcurso('petrobras')">Petrobras</div>
-        <div class="menu-item" onclick="trocarConcurso('fazenda')">Ministério da Fazenda</div>
-        <div class="menu-item" onclick="trocarConcurso('receita')">Receita Federal</div>
+        <div class="menu-item" onclick="trocar('petrobras')">Petrobras</div>
+        <div class="menu-item" onclick="trocar('fazenda')">Ministério da Fazenda</div>
+        <div class="menu-item" onclick="trocar('receita')">Receita Federal</div>
     </div>
 </div>
 
@@ -64,53 +74,63 @@ body {
     <div class="card">
         <input id="disciplina" placeholder="Disciplina">
         <input id="tempo" placeholder="Horas">
-        <button onclick="salvarEstudo()">Salvar</button>
+        <button onclick="salvar()">Salvar</button>
     </div>
 
     <div class="card">
-        <p id="progresso"></p>
-        <p id="tarefas"></p>
+        <p id="progresso">Horas: 0</p>
+        <p id="lista"></p>
     </div>
 </div>
 
 <script>
 
-// 🔥 dados simples e garantidos
+// 🔥 Estrutura correta e simples
 let dados = {
-    petrobras: { total: 0, tarefas: [] },
-    fazenda: { total: 0, tarefas: [] },
-    receita: { total: 0, tarefas: [] }
+    petrobras: { horas: 0, lista: [] },
+    fazenda: { horas: 0, lista: [] },
+    receita: { horas: 0, lista: [] }
 };
 
 let atual = "petrobras";
 
-function salvarEstudo() {
-    let d = document.getElementById("disciplina").value;
-    let t = Number(document.getElementById("tempo").value);
-
-    if (!d || !t) return alert("Preencha");
-
-    dados[atual].total += t;
-    dados[atual].tarefas.push(d + " - " + t + "h");
-
-    atualizar();
-}
-
-function trocarConcurso(nome) {
+// 🔹 Trocar concurso
+function trocar(nome) {
     atual = nome;
     atualizar();
 }
 
+// 🔹 Salvar estudo
+function salvar() {
+    let d = document.getElementById("disciplina").value;
+    let t = Number(document.getElementById("tempo").value);
+
+    if (!d || !t) {
+        alert("Preencha tudo");
+        return;
+    }
+
+    dados[atual].horas += t;
+    dados[atual].lista.push(d + " - " + t + "h");
+
+    atualizar();
+
+    document.getElementById("disciplina").value = "";
+    document.getElementById("tempo").value = "";
+}
+
+// 🔹 Atualizar tela
 function atualizar() {
     document.getElementById("titulo").innerText = atual;
 
     document.getElementById("progresso").innerText =
-        "Horas: " + dados[atual].total;
+        "Horas: " + dados[atual].horas;
 
-    document.getElementById("tarefas").innerText =
-        dados[atual].tarefas.join(", ");
+    document.getElementById("lista").innerText =
+        dados[atual].lista.join(", ");
 }
 
+// 🔹 Menu
 function toggleMenu() {
     let m = document.getElementById("submenu");
     m.style.display = m.style.display === "block" ? "none" : "block";
