@@ -1,6 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Meu Sistema de Estudos</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #1e1e1e;
+    color: #fff;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #2a2a2a;
+    position: fixed;
+    padding: 15px;
+}
+
+.sidebar h2 {
+    color: #ccc;
+}
+
+.menu-item {
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.submenu {
+    margin-left: 15px;
+    display: none;
+}
+
+.content {
+    margin-left: 260px;
+    padding: 20px;
+}
+
+.card {
+    background: #2f2f2f;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
+
+button {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>Estudos</h2>
+
+    <div class="menu-item" onclick="toggleMenu()">Concursos ▸</div>
+    <div class="submenu" id="submenu">
+        <div class="menu-item" onclick="trocarConcurso('petrobras')">Petrobras</div>
+        <div class="menu-item" onclick="trocarConcurso('fazenda')">Ministério da Fazenda</div>
+        <div class="menu-item" onclick="trocarConcurso('receita')">Receita Federal</div>
+    </div>
+
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item">Agenda</div>
+    <div class="menu-item">Disciplinas</div>
+    <div class="menu-item">Revisões</div>
+    <div class="menu-item">Questões</div>
+    <div class="menu-item">Simulados</div>
+    <div class="menu-item">Estatísticas</div>
+</div>
+
+<div class="content">
+
+    <h1 id="titulo"></h1>
+
+    <div class="card">
+        <h3>📅 O que estudar hoje</h3>
+        <p id="tarefas">Nenhuma tarefa ainda</p>
+    </div>
+
+    <div class="card">
+        <h3>⏱ Registrar estudo</h3>
+        <input id="disciplina" placeholder="Disciplina">
+        <input id="tempo" placeholder="Horas">
+        <button onclick="salvarEstudo()">Salvar</button>
+    </div>
+
+    <div class="card">
+        <h3>📊 Progresso</h3>
+        <p id="progresso">0 horas estudadas</p>
+    </div>
+
+    <div class="card">
+        <h3>💾 Backup</h3>
+        <button onclick="exportar()">Fazer Backup</button>
+        <input type="file" onchange="importar(event)">
+    </div>
+
+</div>
+
 <script>
 
-// 🔹 Estrutura com 3 concursos separados
 let dados = JSON.parse(localStorage.getItem("dados")) || {
     concursoAtual: "petrobras",
     concursos: {
@@ -14,7 +123,6 @@ function salvar() {
     localStorage.setItem("dados", JSON.stringify(dados));
 }
 
-// 🔹 Nome correto do concurso
 function nomeConcurso(nome) {
     return {
         petrobras: "Petrobras",
@@ -23,14 +131,12 @@ function nomeConcurso(nome) {
     }[nome];
 }
 
-// 🔹 Trocar concurso
 function trocarConcurso(nome) {
     dados.concursoAtual = nome;
     salvar();
     atualizar();
 }
 
-// 🔹 Salvar estudo
 function salvarEstudo() {
     let disciplina = document.getElementById("disciplina").value;
     let tempo = Number(document.getElementById("tempo").value);
@@ -45,12 +151,10 @@ function salvarEstudo() {
     salvar();
     atualizar();
 
-    // limpar campos
     document.getElementById("disciplina").value = "";
     document.getElementById("tempo").value = "";
 }
 
-// 🔹 Atualizar tela
 function atualizar() {
     let atual = dados.concursos[dados.concursoAtual];
 
@@ -69,13 +173,11 @@ function atualizar() {
     }
 }
 
-// 🔹 Menu
 function toggleMenu() {
     let menu = document.getElementById("submenu");
     menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 
-// 🔹 Backup
 function exportar() {
     let blob = new Blob([JSON.stringify(dados)], {type: "application/json"});
     let a = document.createElement("a");
@@ -97,7 +199,10 @@ function importar(event) {
     reader.readAsText(file);
 }
 
-// 🔥 Inicialização correta
+// 🔥 Inicializa corretamente
 atualizar();
 
 </script>
+
+</body>
+</html>
