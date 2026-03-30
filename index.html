@@ -41,16 +41,6 @@ body {
     margin-bottom: 15px;
     border-radius: 10px;
 }
-
-input {
-    margin: 5px;
-    padding: 8px;
-}
-
-button {
-    padding: 8px;
-    cursor: pointer;
-}
 </style>
 
 </head>
@@ -62,40 +52,22 @@ button {
 
     <div class="menu-item" onclick="toggleMenu()">Concursos ▸</div>
     <div class="submenu" id="submenu">
-        <div class="menu-item" onclick="trocar('petrobras')">Petrobras</div>
-        <div class="menu-item" onclick="trocar('fazenda')">Ministério da Fazenda</div>
-        <div class="menu-item" onclick="trocar('receita')">Receita Federal</div>
+        <div class="menu-item" onclick="trocarConcurso('petrobras')">Petrobras</div>
+        <div class="menu-item" onclick="trocarConcurso('fazenda')">Ministério da Fazenda</div>
+        <div class="menu-item" onclick="trocarConcurso('receita')">Receita Federal</div>
     </div>
 
-    <div class="menu-item">Dashboard</div>
+    <div class="menu-item" onclick="abrirTela('dashboard')">Dashboard</div>
+    <div class="menu-item" onclick="abrirTela('agenda')">Agenda</div>
+    <div class="menu-item" onclick="abrirTela('disciplinas')">Disciplinas</div>
+    <div class="menu-item" onclick="abrirTela('estatisticas')">Estatísticas</div>
 </div>
 
-<div class="content">
-
-    <h1 id="titulo">Petrobras</h1>
-
-    <div class="card">
-        <h3>Registrar estudo</h3>
-        <input id="disciplina" placeholder="Disciplina">
-        <input id="tempo" type="number" placeholder="Horas">
-        <button onclick="salvar()">Salvar</button>
-    </div>
-
-    <div class="card">
-        <h3>Progresso</h3>
-        <p id="progresso">Horas: 0</p>
-    </div>
-
-    <div class="card">
-        <h3>Estudos realizados</h3>
-        <p id="lista"></p>
-    </div>
-
-</div>
+<div class="content" id="conteudo"></div>
 
 <script>
 
-// 🔥 Dados separados por concurso
+// 🔥 dados simples
 let dados = {
     petrobras: { horas: 0, lista: [] },
     fazenda: { horas: 0, lista: [] },
@@ -103,14 +75,63 @@ let dados = {
 };
 
 let atual = "petrobras";
+let telaAtual = "dashboard";
 
-// 🔹 Trocar concurso
-function trocar(nome) {
+// 🔹 trocar concurso
+function trocarConcurso(nome) {
     atual = nome;
-    atualizar();
+    render();
 }
 
-// 🔹 Salvar estudo
+// 🔹 trocar tela
+function abrirTela(tela) {
+    telaAtual = tela;
+    render();
+}
+
+// 🔹 renderizar tela
+function render() {
+    let html = "";
+
+    if (telaAtual === "dashboard") {
+        html = `
+            <h1>${nomeBonito(atual)}</h1>
+
+            <div class="card">
+                <h3>Registrar estudo</h3>
+                <input id="disciplina" placeholder="Disciplina">
+                <input id="tempo" type="number" placeholder="Horas">
+                <button onclick="salvar()">Salvar</button>
+            </div>
+
+            <div class="card">
+                <h3>Progresso</h3>
+                <p>Horas: ${dados[atual].horas}</p>
+            </div>
+
+            <div class="card">
+                <h3>Estudos realizados</h3>
+                <p>${dados[atual].lista.join(", ")}</p>
+            </div>
+        `;
+    }
+
+    if (telaAtual === "agenda") {
+        html = `<h1>Agenda</h1><p>(em breve)</p>`;
+    }
+
+    if (telaAtual === "disciplinas") {
+        html = `<h1>Disciplinas</h1><p>(em breve)</p>`;
+    }
+
+    if (telaAtual === "estatisticas") {
+        html = `<h1>Estatísticas</h1><p>(em breve)</p>`;
+    }
+
+    document.getElementById("conteudo").innerHTML = html;
+}
+
+// 🔹 salvar estudo
 function salvar() {
     let d = document.getElementById("disciplina").value;
     let t = Number(document.getElementById("tempo").value);
@@ -123,24 +144,10 @@ function salvar() {
     dados[atual].horas += t;
     dados[atual].lista.push(d + " - " + t + "h");
 
-    atualizar();
-
-    document.getElementById("disciplina").value = "";
-    document.getElementById("tempo").value = "";
+    render();
 }
 
-// 🔹 Atualizar tela
-function atualizar() {
-    document.getElementById("titulo").innerText = nomeBonito(atual);
-
-    document.getElementById("progresso").innerText =
-        "Horas: " + dados[atual].horas;
-
-    document.getElementById("lista").innerText =
-        dados[atual].lista.join(", ");
-}
-
-// 🔹 Nome bonito
+// 🔹 nome bonito
 function nomeBonito(nome) {
     return {
         petrobras: "Petrobras",
@@ -149,13 +156,14 @@ function nomeBonito(nome) {
     }[nome];
 }
 
-// 🔹 Menu
+// 🔹 menu
 function toggleMenu() {
     let m = document.getElementById("submenu");
     m.style.display = m.style.display === "block" ? "none" : "block";
 }
 
-atualizar();
+// 🔥 iniciar
+render();
 
 </script>
 
