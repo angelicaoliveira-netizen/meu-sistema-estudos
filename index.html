@@ -9,7 +9,7 @@ body {
     margin: 0;
     font-family: Arial;
     background: #1e1e1e;
-    color: white;
+    color: #fff;
 }
 
 .sidebar {
@@ -44,11 +44,11 @@ body {
 
 input {
     margin: 5px;
-    padding: 5px;
+    padding: 8px;
 }
 
 button {
-    padding: 5px 10px;
+    padding: 8px;
     cursor: pointer;
 }
 </style>
@@ -66,26 +66,36 @@ button {
         <div class="menu-item" onclick="trocar('fazenda')">Ministério da Fazenda</div>
         <div class="menu-item" onclick="trocar('receita')">Receita Federal</div>
     </div>
+
+    <div class="menu-item">Dashboard</div>
 </div>
 
 <div class="content">
+
     <h1 id="titulo">Petrobras</h1>
 
     <div class="card">
+        <h3>Registrar estudo</h3>
         <input id="disciplina" placeholder="Disciplina">
-        <input id="tempo" placeholder="Horas">
+        <input id="tempo" type="number" placeholder="Horas">
         <button onclick="salvar()">Salvar</button>
     </div>
 
     <div class="card">
+        <h3>Progresso</h3>
         <p id="progresso">Horas: 0</p>
+    </div>
+
+    <div class="card">
+        <h3>Estudos realizados</h3>
         <p id="lista"></p>
     </div>
+
 </div>
 
 <script>
 
-// 🔥 Estrutura correta e simples
+// 🔥 Dados separados por concurso
 let dados = {
     petrobras: { horas: 0, lista: [] },
     fazenda: { horas: 0, lista: [] },
@@ -121,13 +131,22 @@ function salvar() {
 
 // 🔹 Atualizar tela
 function atualizar() {
-    document.getElementById("titulo").innerText = atual;
+    document.getElementById("titulo").innerText = nomeBonito(atual);
 
     document.getElementById("progresso").innerText =
         "Horas: " + dados[atual].horas;
 
     document.getElementById("lista").innerText =
         dados[atual].lista.join(", ");
+}
+
+// 🔹 Nome bonito
+function nomeBonito(nome) {
+    return {
+        petrobras: "Petrobras",
+        fazenda: "Ministério da Fazenda",
+        receita: "Receita Federal"
+    }[nome];
 }
 
 // 🔹 Menu
