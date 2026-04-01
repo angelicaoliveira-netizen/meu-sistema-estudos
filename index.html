@@ -70,61 +70,164 @@ button {
     <div class="menu-item" onclick="abrir('dashboard')">Dashboard</div>
     <div class="menu-item" onclick="abrir('agenda')">Agenda</div>
     <div class="menu-item" onclick="abrir('disciplinas')">Disciplinas</div>
+    <div class="menu-item" onclick="abrir('historico')">Histórico</div>
 </div>
 
 <div class="content" id="conteudo"></div>
 
 <script>
 
-let dados = {
-    petrobras: { horas: 0, estudos: [], agenda: [], disciplinas: [] },
-    fazenda: { horas: 0, estudos: [], agenda: [], disciplinas: [] },
-    receita: { horas: 0, estudos: [], agenda: [], disciplinas: [] }
+// 🔥 CARREGAR OU CRIAR DADOS
+let dados = JSON.parse(localStorage.getItem("dados")) || {
+    concursoAtual: "petrobras",
+    concursos: {
+        petrobras: { horas: 0, estudos: [], agenda: [], disciplinas: [] },
+        fazenda: { horas: 0, estudos: [], agenda: [], disciplinas: [] },
+        receita: { horas: 0, estudos: [], agenda: [], disciplinas: [] }
+    }
 };
 
-let atual = "petrobras";
 let tela = "dashboard";
 
-function trocar(nome){
-    atual = nome;
+// 🔹 salvar automaticamente
+function salvar() {
+    localStorage.setItem("dados", JSON.stringify(dados));
+}
+
+// 🔹 trocar concurso
+function trocar(nome) {
+    dados.concursoAtual = nome;
+    salvar();
     render();
 }
 
-function abrir(t){
+// 🔹 abrir tela
+function abrir(t) {
     tela = t;
     render();
 }
 
-function render(){
+// 🔹 render principal
+function render() {
     let c = document.getElementById("conteudo");
-    let d = dados[atual];
+    let atual = dados.concursos[dados.concursoAtual];
 
-    if(tela === "dashboard"){
-    let estudosHoje = d.estudos.slice(-3);
+    // DASHBOARD
+    if (tela === "dashboard") {
+        c.innerHTML = `
+        <h1>${dados.concursoAtual}</h1>
 
-    html = `
-    <h1>${atual}</h1>
+        <div class="card">
+            <h3>Registrar estudo</h3>
+            <input id="disciplina" placeholder="Disciplina">
+            <input id="tempo" type="number" placeholder="Horas">
+            <button onclick="salvarEstudo()">Salvar</button>
+        </div>
 
-    <div class="card">
-        <h3>📅 O que estudar hoje</h3>
-        <p>${estudosHoje.length ? estudosHoje.join("<br>") : "Nada registrado ainda"}</p>
-    </div>
+        <div class="card">
+            <h3>Progresso</h3>
+            <p>Horas: ${atual.horas}</p>
+        </div>
 
-    <div class="card">
-        <h3>Registrar estudo</h3>
-        <input id="disciplina" placeholder="Disciplina">
-        <input id="tempo" type="number" placeholder="Horas">
-        <button onclick="salvarEstudo()">Salvar</button>
-    </div>
+        <div class="card">
+            <h3>Últimos estudos</h3>
+            <p>${atual.estudos.slice(-5).join("<br>")}</p>
+        </div>
+        `;
+    }
 
-    <div class="card">
-        <h3>📊 Progresso</h3>
-        <p>Horas: ${d.horas}</p>
-    </div>
+    // AGENDA
+    if (tela === "agenda") {
+        c.innerHTML = `
+        <h1>Agenda</h1>
 
-    <div class="card">
-        <h3>📚 Histórico recente</h3>
-        <p>${d.estudos.join("<br>")}</p>
-    </div>
-    `;
+        <div class="card">
+            <input id="tarefa" placeholder="Nova tarefa">
+            <button onclick="addTarefa()">Adicionar</button>
+        </div>
+
+        <div class="card">
+            ${atual.agenda.join("<br>")}
+        </div>
+        `;
+    }
+
+    // DISCIPLINAS
+    if (tela === "disciplinas") {
+        c.innerHTML = `
+        <h1>Disciplinas</h1>
+
+        <div class="card">
+            <input id="novaDisc" placeholder="Nova disciplina">
+            <button onclick="addDisciplina()">Adicionar</button>
+        </div>
+
+        <div class="card">
+            ${atual.disciplinas.join("<br>")}
+        </div>
+        `;
+    }
+
+    // HISTÓRICO
+    if (tela === "historico") {
+        c.innerHTML = `
+        <h1>Histórico</h1>
+
+        <div class="card">
+            ${atual.estudos.join("<br>")}
+        </div>
+        `;
+    }
 }
+
+// 🔹 salvar estudo
+function salvarEstudo() {
+    let d = document.getElementById("disciplina").value;
+    let t = Number(document.getElementById("tempo").value);
+
+    if (!d || !t) return alert("Preencha tudo");
+
+    let atual = dados.concursos[dados.concursoAtual];
+
+    atual.horas += t;
+    atual.estudos.push(d + " - " + t + "h");
+
+    salvar();
+    render();
+}
+
+// 🔹 agenda
+function addTarefa() {
+    let t = document.getElementById("tarefa").value;
+    if (!t) return;
+
+    dados.concursos[dados.concursoAtual].agenda.push(t);
+
+    salvar();
+    render();
+}
+
+// 🔹 disciplinas
+function addDisciplina() {
+    let d = document.getElementById("novaDisc").value;
+    if (!d) return;
+
+    dados.concursos[dados.concursoAtual].disciplinas.push(d);
+
+    salvar();
+    render();
+}
+
+// 🔹 menu
+function toggleMenu() {
+    let m = document.getElementById("submenu");
+    m.style.display = m.style.display === "block" ? "none" : "block";
+}
+
+// iniciar
+render();
+
+</script>
+
+</body>
+</html>
