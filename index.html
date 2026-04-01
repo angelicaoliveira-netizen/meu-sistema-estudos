@@ -41,6 +41,16 @@ body {
     margin-bottom: 15px;
     border-radius: 10px;
 }
+
+input {
+    margin: 5px;
+    padding: 8px;
+}
+
+button {
+    padding: 8px;
+    cursor: pointer;
+}
 </style>
 
 </head>
@@ -52,117 +62,125 @@ body {
 
     <div class="menu-item" onclick="toggleMenu()">Concursos ▸</div>
     <div class="submenu" id="submenu">
-        <div class="menu-item" onclick="trocarConcurso('petrobras')">Petrobras</div>
-        <div class="menu-item" onclick="trocarConcurso('fazenda')">Ministério da Fazenda</div>
-        <div class="menu-item" onclick="trocarConcurso('receita')">Receita Federal</div>
+        <div class="menu-item" onclick="trocar('petrobras')">Petrobras</div>
+        <div class="menu-item" onclick="trocar('fazenda')">Ministério da Fazenda</div>
+        <div class="menu-item" onclick="trocar('receita')">Receita Federal</div>
     </div>
 
-    <div class="menu-item" onclick="abrirTela('dashboard')">Dashboard</div>
-    <div class="menu-item" onclick="abrirTela('agenda')">Agenda</div>
-    <div class="menu-item" onclick="abrirTela('disciplinas')">Disciplinas</div>
-    <div class="menu-item" onclick="abrirTela('estatisticas')">Estatísticas</div>
+    <div class="menu-item" onclick="abrir('dashboard')">Dashboard</div>
+    <div class="menu-item" onclick="abrir('agenda')">Agenda</div>
+    <div class="menu-item" onclick="abrir('disciplinas')">Disciplinas</div>
 </div>
 
 <div class="content" id="conteudo"></div>
 
 <script>
 
-// 🔥 dados simples
 let dados = {
-    petrobras: { horas: 0, lista: [] },
-    fazenda: { horas: 0, lista: [] },
-    receita: { horas: 0, lista: [] }
+    petrobras: { horas: 0, estudos: [], agenda: [], disciplinas: [] },
+    fazenda: { horas: 0, estudos: [], agenda: [], disciplinas: [] },
+    receita: { horas: 0, estudos: [], agenda: [], disciplinas: [] }
 };
 
 let atual = "petrobras";
-let telaAtual = "dashboard";
+let tela = "dashboard";
 
-// 🔹 trocar concurso
-function trocarConcurso(nome) {
+function trocar(nome){
     atual = nome;
     render();
 }
 
-// 🔹 trocar tela
-function abrirTela(tela) {
-    telaAtual = tela;
+function abrir(t){
+    tela = t;
     render();
 }
 
-// 🔹 renderizar tela
-function render() {
-    let html = "";
+function render(){
+    let c = document.getElementById("conteudo");
+    let d = dados[atual];
 
-    if (telaAtual === "dashboard") {
-        html = `
-            <h1>${nomeBonito(atual)}</h1>
+    if(tela === "dashboard"){
+        c.innerHTML = `
+        <h1>${atual}</h1>
 
-            <div class="card">
-                <h3>Registrar estudo</h3>
-                <input id="disciplina" placeholder="Disciplina">
-                <input id="tempo" type="number" placeholder="Horas">
-                <button onclick="salvar()">Salvar</button>
-            </div>
+        <div class="card">
+            <input id="disciplina" placeholder="Disciplina">
+            <input id="tempo" type="number" placeholder="Horas">
+            <button onclick="salvarEstudo()">Salvar</button>
+        </div>
 
-            <div class="card">
-                <h3>Progresso</h3>
-                <p>Horas: ${dados[atual].horas}</p>
-            </div>
-
-            <div class="card">
-                <h3>Estudos realizados</h3>
-                <p>${dados[atual].lista.join(", ")}</p>
-            </div>
+        <div class="card">
+            <p>Horas: ${d.horas}</p>
+            <p>${d.estudos.join(", ")}</p>
+        </div>
         `;
     }
 
-    if (telaAtual === "agenda") {
-        html = `<h1>Agenda</h1><p>(em breve)</p>`;
+    if(tela === "agenda"){
+        c.innerHTML = `
+        <h1>Agenda</h1>
+
+        <div class="card">
+            <input id="tarefa" placeholder="Tarefa">
+            <button onclick="addTarefa()">Adicionar</button>
+        </div>
+
+        <div class="card">
+            ${d.agenda.join("<br>")}
+        </div>
+        `;
     }
 
-    if (telaAtual === "disciplinas") {
-        html = `<h1>Disciplinas</h1><p>(em breve)</p>`;
-    }
+    if(tela === "disciplinas"){
+        c.innerHTML = `
+        <h1>Disciplinas</h1>
 
-    if (telaAtual === "estatisticas") {
-        html = `<h1>Estatísticas</h1><p>(em breve)</p>`;
-    }
+        <div class="card">
+            <input id="novaDisc" placeholder="Nova disciplina">
+            <button onclick="addDisciplina()">Adicionar</button>
+        </div>
 
-    document.getElementById("conteudo").innerHTML = html;
+        <div class="card">
+            ${d.disciplinas.join("<br>")}
+        </div>
+        `;
+    }
 }
 
-// 🔹 salvar estudo
-function salvar() {
-    let d = document.getElementById("disciplina").value;
-    let t = Number(document.getElementById("tempo").value);
+function salvarEstudo(){
+    let disc = document.getElementById("disciplina").value;
+    let tempo = Number(document.getElementById("tempo").value);
 
-    if (!d || !t) {
-        alert("Preencha tudo");
-        return;
-    }
+    if(!disc || !tempo) return alert("Preencha");
 
-    dados[atual].horas += t;
-    dados[atual].lista.push(d + " - " + t + "h");
+    let d = dados[atual];
+    d.horas += tempo;
+    d.estudos.push(disc + " - " + tempo + "h");
 
     render();
 }
 
-// 🔹 nome bonito
-function nomeBonito(nome) {
-    return {
-        petrobras: "Petrobras",
-        fazenda: "Ministério da Fazenda",
-        receita: "Receita Federal"
-    }[nome];
+function addTarefa(){
+    let t = document.getElementById("tarefa").value;
+    if(!t) return;
+
+    dados[atual].agenda.push(t);
+    render();
 }
 
-// 🔹 menu
-function toggleMenu() {
+function addDisciplina(){
+    let d = document.getElementById("novaDisc").value;
+    if(!d) return;
+
+    dados[atual].disciplinas.push(d);
+    render();
+}
+
+function toggleMenu(){
     let m = document.getElementById("submenu");
     m.style.display = m.style.display === "block" ? "none" : "block";
 }
 
-// 🔥 iniciar
 render();
 
 </script>
