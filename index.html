@@ -100,90 +100,31 @@ function render(){
     let d = dados[atual];
 
     if(tela === "dashboard"){
-        c.innerHTML = `
-        <h1>${atual}</h1>
+    let estudosHoje = d.estudos.slice(-3);
 
-        <div class="card">
-            <input id="disciplina" placeholder="Disciplina">
-            <input id="tempo" type="number" placeholder="Horas">
-            <button onclick="salvarEstudo()">Salvar</button>
-        </div>
+    html = `
+    <h1>${atual}</h1>
 
-        <div class="card">
-            <p>Horas: ${d.horas}</p>
-            <p>${d.estudos.join(", ")}</p>
-        </div>
-        `;
-    }
+    <div class="card">
+        <h3>📅 O que estudar hoje</h3>
+        <p>${estudosHoje.length ? estudosHoje.join("<br>") : "Nada registrado ainda"}</p>
+    </div>
 
-    if(tela === "agenda"){
-        c.innerHTML = `
-        <h1>Agenda</h1>
+    <div class="card">
+        <h3>Registrar estudo</h3>
+        <input id="disciplina" placeholder="Disciplina">
+        <input id="tempo" type="number" placeholder="Horas">
+        <button onclick="salvarEstudo()">Salvar</button>
+    </div>
 
-        <div class="card">
-            <input id="tarefa" placeholder="Tarefa">
-            <button onclick="addTarefa()">Adicionar</button>
-        </div>
+    <div class="card">
+        <h3>📊 Progresso</h3>
+        <p>Horas: ${d.horas}</p>
+    </div>
 
-        <div class="card">
-            ${d.agenda.join("<br>")}
-        </div>
-        `;
-    }
-
-    if(tela === "disciplinas"){
-        c.innerHTML = `
-        <h1>Disciplinas</h1>
-
-        <div class="card">
-            <input id="novaDisc" placeholder="Nova disciplina">
-            <button onclick="addDisciplina()">Adicionar</button>
-        </div>
-
-        <div class="card">
-            ${d.disciplinas.join("<br>")}
-        </div>
-        `;
-    }
+    <div class="card">
+        <h3>📚 Histórico recente</h3>
+        <p>${d.estudos.join("<br>")}</p>
+    </div>
+    `;
 }
-
-function salvarEstudo(){
-    let disc = document.getElementById("disciplina").value;
-    let tempo = Number(document.getElementById("tempo").value);
-
-    if(!disc || !tempo) return alert("Preencha");
-
-    let d = dados[atual];
-    d.horas += tempo;
-    d.estudos.push(disc + " - " + tempo + "h");
-
-    render();
-}
-
-function addTarefa(){
-    let t = document.getElementById("tarefa").value;
-    if(!t) return;
-
-    dados[atual].agenda.push(t);
-    render();
-}
-
-function addDisciplina(){
-    let d = document.getElementById("novaDisc").value;
-    if(!d) return;
-
-    dados[atual].disciplinas.push(d);
-    render();
-}
-
-function toggleMenu(){
-    let m = document.getElementById("submenu");
-    m.style.display = m.style.display === "block" ? "none" : "block";
-}
-
-render();
-
-</script>
-
-</body>
-</html>
