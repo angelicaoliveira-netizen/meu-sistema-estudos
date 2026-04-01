@@ -77,66 +77,66 @@ button {
 
 <script>
 
-// 🔥 CARREGAR OU CRIAR DADOS
+// 🔥 DADOS COM CICLO
 let dados = JSON.parse(localStorage.getItem("dados")) || {
     concursoAtual: "petrobras",
     concursos: {
-        petrobras: { horas: 0, estudos: [], agenda: [], disciplinas: [] },
-        fazenda: { horas: 0, estudos: [], agenda: [], disciplinas: [] },
-        receita: { horas: 0, estudos: [], agenda: [], disciplinas: [] }
+        petrobras: { horas: 0, estudos: [], agenda: [], disciplinas: [], ciclo: [], posicao: 0 },
+        fazenda: { horas: 0, estudos: [], agenda: [], disciplinas: [], ciclo: [], posicao: 0 },
+        receita: { horas: 0, estudos: [], agenda: [], disciplinas: [], ciclo: [], posicao: 0 }
     }
 };
 
 let tela = "dashboard";
 
-// 🔹 salvar automaticamente
 function salvar() {
     localStorage.setItem("dados", JSON.stringify(dados));
 }
 
-// 🔹 trocar concurso
 function trocar(nome) {
     dados.concursoAtual = nome;
     salvar();
     render();
 }
 
-// 🔹 abrir tela
 function abrir(t) {
     tela = t;
     render();
 }
 
-// 🔹 render principal
 function render() {
     let c = document.getElementById("conteudo");
     let atual = dados.concursos[dados.concursoAtual];
 
-    // DASHBOARD
+    // 🔥 SUGESTÃO AUTOMÁTICA
+    let sugestao = "Cadastre disciplinas";
+
+    if (atual.ciclo.length > 0) {
+        sugestao = atual.ciclo[atual.posicao];
+    }
+
     if (tela === "dashboard") {
         c.innerHTML = `
         <h1>${dados.concursoAtual}</h1>
 
         <div class="card">
-            <h3>Registrar estudo</h3>
+            <h3>📅 Estudar agora</h3>
+            <p>${sugestao}</p>
+        </div>
+
+        <div class="card">
             <input id="disciplina" placeholder="Disciplina">
             <input id="tempo" type="number" placeholder="Horas">
             <button onclick="salvarEstudo()">Salvar</button>
         </div>
 
         <div class="card">
-            <h3>Progresso</h3>
             <p>Horas: ${atual.horas}</p>
-        </div>
-
-        <div class="card">
-            <h3>Últimos estudos</h3>
             <p>${atual.estudos.slice(-5).join("<br>")}</p>
         </div>
         `;
     }
 
-    // AGENDA
     if (tela === "agenda") {
         c.innerHTML = `
         <h1>Agenda</h1>
@@ -152,7 +152,6 @@ function render() {
         `;
     }
 
-    // DISCIPLINAS
     if (tela === "disciplinas") {
         c.innerHTML = `
         <h1>Disciplinas</h1>
@@ -168,11 +167,9 @@ function render() {
         `;
     }
 
-    // HISTÓRICO
     if (tela === "historico") {
         c.innerHTML = `
         <h1>Histórico</h1>
-
         <div class="card">
             ${atual.estudos.join("<br>")}
         </div>
@@ -180,51 +177,56 @@ function render() {
     }
 }
 
-// 🔹 salvar estudo
 function salvarEstudo() {
     let d = document.getElementById("disciplina").value;
     let t = Number(document.getElementById("tempo").value);
 
-    if (!d || !t) return alert("Preencha tudo");
+    if (!d || !t) return alert("Preencha");
 
     let atual = dados.concursos[dados.concursoAtual];
 
     atual.horas += t;
     atual.estudos.push(d + " - " + t + "h");
 
+    // 🔥 GIRAR CICLO
+    if (atual.ciclo.length > 0) {
+        atual.posicao++;
+        if (atual.posicao >= atual.ciclo.length) {
+            atual.posicao = 0;
+        }
+    }
+
     salvar();
     render();
 }
 
-// 🔹 agenda
 function addTarefa() {
     let t = document.getElementById("tarefa").value;
     if (!t) return;
 
     dados.concursos[dados.concursoAtual].agenda.push(t);
-
     salvar();
     render();
 }
 
-// 🔹 disciplinas
 function addDisciplina() {
     let d = document.getElementById("novaDisc").value;
     if (!d) return;
 
-    dados.concursos[dados.concursoAtual].disciplinas.push(d);
+    let atual = dados.concursos[dados.concursoAtual];
+
+    atual.disciplinas.push(d);
+    atual.ciclo.push(d); // 🔥 entra no ciclo automático
 
     salvar();
     render();
 }
 
-// 🔹 menu
 function toggleMenu() {
     let m = document.getElementById("submenu");
     m.style.display = m.style.display === "block" ? "none" : "block";
 }
 
-// iniciar
 render();
 
 </script>
